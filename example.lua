@@ -6,15 +6,11 @@ window:Divider("Player")
 
 local sectionA = window:Section("Fly")
 
-sectionA:Divider("Başlık")
-
-sectionA:Button("Tıkla bana!", function()
-   print("Button clicked.")
-end)
+sectionA:Divider("Fly Settings")
 
 -- ==================== FLY SCRIPT ====================
 local flyEnabled = false
-local flySpeed = 50
+local flySpeed = 250
 
 local bv, bg
 
