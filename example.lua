@@ -36,10 +36,13 @@ sectionA:Switch("Fly", false, function(state)
         bg.MaxTorque = Vector3.new(400000, 400000, 400000)
         bg.P = 12500
         bg.Parent = root
+        
+        print("✅ Fly Aktif")
     else
         if bv then bv:Destroy() end
         if bg then bg:Destroy() end
         if hum then hum.PlatformStand = false end
+        print("❌ Fly Kapalı")
     end
 end)
 
@@ -53,7 +56,7 @@ end)
 
 -- Ana Uçuş Loop
 RunService.Heartbeat:Connect(function()
-    if not flyEnabled or not bv then return end
+    if not flyEnabled or not bv or not bg then return end
     
     local character = player.Character
     if not character or not character:FindFirstChild("HumanoidRootPart") then return end
@@ -74,9 +77,7 @@ RunService.Heartbeat:Connect(function()
         bv.Velocity = Vector3.new(0,0,0)
     end
     
-    if bg then
-        bg.CFrame = cam.CFrame
-    end
+    bg.CFrame = cam.CFrame
 end)
 -- ===================================================
 
