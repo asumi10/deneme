@@ -8,7 +8,7 @@ local sectionA = window:Section("Fly")
 
 sectionA:Divider("Uçma Sistemi")
 
--- ==================== YENİ FLY HİLESİ (CFrame) ====================
+-- ==================== FLY HİLESİ (Düzeltilmiş) ====================
 local flyEnabled = false
 local speed = 100
 local player = game.Players.LocalPlayer
@@ -20,9 +20,12 @@ sectionA:Switch("Fly", false, function(state)
     flyEnabled = state
     
     local character = player.Character or player.CharacterAdded:Wait()
+    local root = character:WaitForChild("HumanoidRootPart")
     local hum = character:WaitForChild("Humanoid")
     
     if flyEnabled then
+        -- Karakteri yere gömülmemesi için hafif yukarı kaldır
+        root.CFrame = root.CFrame + Vector3.new(0, 4, 0)
         hum.PlatformStand = true
         print("✅ Fly Aktif")
     else
