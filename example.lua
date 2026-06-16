@@ -8,40 +8,25 @@ local sectionA = window:Section("Fly")
 
 sectionA:Divider("Uçma Sistemi")
 
--- ==================== FLY HİLESİ ====================
+-- ==================== YENİ FLY HİLESİ (CFrame) ====================
 local flyEnabled = false
 local speed = 100
-local bv, bg = nil, nil
-
 local player = game.Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local connection = nil
 
 sectionA:Switch("Fly", false, function(state)
     flyEnabled = state
     
     local character = player.Character or player.CharacterAdded:Wait()
-    local root = character:WaitForChild("HumanoidRootPart")
     local hum = character:WaitForChild("Humanoid")
     
     if flyEnabled then
         hum.PlatformStand = true
-        
-        bv = Instance.new("BodyVelocity")
-        bv.MaxForce = Vector3.new(400000, 400000, 400000)
-        bv.Velocity = Vector3.new(0,0,0)
-        bv.Parent = root
-        
-        bg = Instance.new("BodyGyro")
-        bg.MaxTorque = Vector3.new(400000, 400000, 400000)
-        bg.P = 12500
-        bg.Parent = root
-        
         print("✅ Fly Aktif")
     else
-        if bv then bv:Destroy() end
-        if bg then bg:Destroy() end
-        if hum then hum.PlatformStand = false end
+        hum.PlatformStand = false
         print("❌ Fly Kapalı")
     end
 end)
@@ -55,12 +40,15 @@ sectionA:Button("Hızı Sıfırla", function()
 end)
 
 -- Ana Uçuş Loop
-RunService.Heartbeat:Connect(function()
-    if not flyEnabled or not bv or not bg then return end
+if connection then connection:Disconnect() end
+
+connection = RunService.Heartbeat:Connect(function(dt)
+    if not flyEnabled then return end
     
     local character = player.Character
     if not character or not character:FindFirstChild("HumanoidRootPart") then return end
     
+    local root = character.HumanoidRootPart
     local cam = workspace.CurrentCamera
     local moveDir = Vector3.new(0, 0, 0)
     
@@ -72,12 +60,8 @@ RunService.Heartbeat:Connect(function()
     if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then moveDir -= Vector3.new(0,1,0) end
     
     if moveDir.Magnitude > 0 then
-        bv.Velocity = moveDir.Unit * speed
-    else
-        bv.Velocity = Vector3.new(0,0,0)
+        root.CFrame = root.CFrame + (moveDir.Unit * speed * dt * 5)
     end
-    
-    bg.CFrame = cam.CFrame
 end)
 -- ===================================================
 
